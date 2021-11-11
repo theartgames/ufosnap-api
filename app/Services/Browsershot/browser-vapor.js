@@ -1,7 +1,7 @@
 /**
  * This is the one that runs on Vapor.
  */
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer');
 
 const fs = require('fs');
 const URL = require('url').URL;
@@ -62,17 +62,18 @@ const callChrome = async () => {
             }
 
             try {
-                browser = await chromium.puppeteer.connect( options );
+                browser = await puppeteer.connect( options );
 
                 remoteInstance = true;
             } catch (exception) { /** does nothing. fallbacks to launching a chromium instance */}
         }
 
         if (!browser) {
-            browser = await chromium.puppeteer.launch({
+            browser = await puppeteer.launch({
+                headless: true,
                 ignoreHTTPSErrors: request.options.ignoreHttpsErrors,
-                executablePath: await chromium.executablePath,
-                args: [...chromium.args, ...(request.options.args || [])],
+                executablePath: request.options.executablePath,
+                args: ["--no-sandbox", "--disable-gpu", ...args, ...(request.options.args || [])],
             });
         }
 
@@ -132,7 +133,7 @@ const callChrome = async () => {
         }
 
         if (request.options && request.options.device) {
-            const devices = chromium.puppeteer.devices;
+            const devices = puppeteer.devices;
             const device = devices[request.options.device];
             await page.emulate(device);
         }

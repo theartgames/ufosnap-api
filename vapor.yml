@@ -1,37 +1,17 @@
-id: [Your-Vapor-Project-Id-Goes-Here]
-name: phantom-analyzer
-separate-vendor: true
+id: 25126
+name: ufosnap-api
 environments:
     production:
+        runtime: docker
+        domain: 'api.ufosnap.io'
         memory: 1024
+        timeout: 300
         cli-memory: 2048
         cli-timeout: 180
-        warm: 500
-        build:
-          - 'composer install --no-dev --classmap-authoritative'
-        layers:
-          # LambCI custom node layer (https://github.com/lambci/node-custom-lambda)
-          - arn:aws:lambda:us-east-1:553035198032:layer:nodejs12:33
-
-          # Vapor PHP Layer (node layer overwrites the runtime, so this has to come afterwards)
-          - vapor:php-7.4
-
-          # Compressed Chromium layer (https://github.com/shelfio/chrome-aws-lambda-layer)
-          - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:8
+        warm: 8
     staging:
+        runtime: docker
         memory: 1024
         cli-memory: 1024
+        timeout: 300
         cli-timeout: 180
-        build:
-            - 'composer install --classmap-authoritative'
-        # deploy:
-            # - 'php artisan phantom:cache_spy_pixels'
-        layers:
-          # LambCI custom node layer (https://github.com/lambci/node-custom-lambda)
-          - arn:aws:lambda:us-east-1:553035198032:layer:nodejs12:33
-
-          # Vapor PHP Layer (node layer overwrites the runtime, so this has to come afterwards)
-          - vapor:php-7.4
-
-          # Compressed Chromium layer (https://github.com/shelfio/chrome-aws-lambda-layer)
-          - arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:8
