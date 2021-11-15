@@ -4,7 +4,8 @@ environments:
     production:
         runtime: docker
         domain: 'api.ufosnap.io'
-        memory: 1024
+        database: 'ufosnap'
+        memory: 4096
         timeout: 300
         cli-memory: 2048
         cli-timeout: 180

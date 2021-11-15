@@ -16,12 +16,6 @@ use App\Http\Controllers\PdfController;
 |
 */
 
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/
-
 Route::get('/', function (Request $request) {
     return 'opa';
 });

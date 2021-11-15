@@ -73,7 +73,14 @@ const callChrome = async () => {
                 headless: true,
                 ignoreHTTPSErrors: request.options.ignoreHttpsErrors,
                 executablePath: request.options.executablePath,
-                args: ["--no-sandbox", "--disable-gpu", ...args, ...(request.options.args || [])],
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--single-process',
+                    ...args,
+                    ...(request.options.args || [])
+                ]
             });
         }
 
