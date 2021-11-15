@@ -10,9 +10,3 @@ environments:
         cli-memory: 2048
         cli-timeout: 180
         warm: 8
-    staging:
-        runtime: docker
-        memory: 1024
-        cli-memory: 1024
-        timeout: 300
-        cli-timeout: 180

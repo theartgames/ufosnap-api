@@ -35,20 +35,14 @@ class PdfController extends Controller
             return;
         }
 
-        $pdf = Browsershot::url($url)
-            ->setNodeBinary('/opt/homebrew/bin/node')
-            //->setBinPath(app_path('Services/Browsershot/browser-local.js'))
+        $pdf = Browsershot::html($html)
+            ->setNodeBinary($this->getNodeBinary())
+            ->setBinPath($this->getBinPath())
             ->userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
+            ->setIncludePath($this->getIncludePath())
+            ->setChromePath($this->getChromePath())
+            ->setNodeModulePath($this->getNodeModulePath())
             ->waitUntilNetworkIdle();
-
-        // Extra pieces required for Laravel Vapor
-        //if (! App::environment(['local'])) {
-            $pdf->setNodeBinary('/usr/bin/node')
-                ->setIncludePath('$PATH:/usr/bin/node')
-                ->setChromePath("/usr/bin/chromium-browser")
-                ->setNodeModulePath('/usr/local/lib/node_modules');
-                //->setBinPath(app_path('Services/Browsershot/browser-vapor.js'));
-        //}
 
         return response($pdf->pdf(), 200)->header('Content-Type','application/pdf');
     }
@@ -58,20 +52,57 @@ class PdfController extends Controller
         $html = $request->getContent();
 
         $pdf = Browsershot::html($html)
-            ->setNodeBinary('/opt/homebrew/bin/node')
-            ->setBinPath(app_path('Services/Browsershot/browser-local.js'))
+            ->setNodeBinary($this->getNodeBinary())
+            ->setBinPath($this->getBinPath())
             ->userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
+            ->setIncludePath($this->getIncludePath())
+            ->setChromePath($this->getChromePath())
+            ->setNodeModulePath($this->getNodeModulePath())
             ->waitUntilNetworkIdle();
 
-        // Extra pieces required for Laravel Vapor
-        //if (! App::environment(['local'])) {
-            $pdf->setNodeBinary('/usr/bin/node')
-                ->setIncludePath('$PATH:/usr/bin/node')
-                ->setChromePath("/usr/bin/chromium-browser")
-                ->setNodeModulePath('/usr/local/lib/node_modules')
-                ->setBinPath(app_path('Services/Browsershot/browser-vapor.js'));
-        //}
-
         return response($pdf->pdf(), 200)->header('Content-Type','application/pdf');
+    }
+
+    protected function getNodeBinary()
+    {
+        if(! App::environment(['local'])) {
+            return '/usr/bin/node';
+        } else {
+            return '/opt/homebrew/bin/node';
+        }
+    }
+
+    protected function getBinPath(Browsershot $browsershot)
+    {
+        if(! App::environment(['local'])) {
+            return app_path('Services/Browsershot/browser-vapor.js');
+        } else {
+            return app_path('Services/Browsershot/browser-local.js');
+        }
+    }
+
+    protected function getIncludePath()
+    {
+        if(! App::environment(['local'])) {
+            return '$PATH:/usr/bin/node';
+        } else {
+            return null;
+        }
+    }
+    protected function getChromePath()
+    {
+        if(! App::environment(['local'])) {
+            return '/usr/bin/chromium-browser';
+        } else {
+            return null;
+        }
+    }
+    protected function getNodeModulePath()
+    {
+        if(! App::environment(['local'])) {
+            return '/usr/local/lib/node_modules';
+        } else {
+            return null;
+        }
     }
 }

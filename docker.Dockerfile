@@ -9,7 +9,7 @@ RUN apk add --no-cache \
       ca-certificates \
       ttf-freefont
 
-# de cacat.
+# de cacat. 
 RUN apk add --no-cache chromium=86.0.4240.111-r0 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.13/community
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.

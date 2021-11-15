@@ -17,7 +17,7 @@ use App\Http\Controllers\PdfController;
 */
 
 Route::get('/', function (Request $request) {
-    return 'opa';
+    return redirect()->away(env('APP_HOME_URL'));
 });
 
 Route::middleware([AuthorizeApiKey::class])->group(function () {
