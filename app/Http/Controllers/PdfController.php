@@ -35,32 +35,39 @@ class PdfController extends Controller
             return;
         }
 
-        $pdf = Browsershot::html($html)
+        $browsershot = Browsershot::url($url)
             ->setNodeBinary($this->getNodeBinary())
             ->setBinPath($this->getBinPath())
             ->userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
-            ->setIncludePath($this->getIncludePath())
-            ->setChromePath($this->getChromePath())
-            ->setNodeModulePath($this->getNodeModulePath())
+            //->setIncludePath($this->getIncludePath())
+            //->setChromePath($this->getChromePath())
+            //->setNodeModulePath($this->getNodeModulePath())
+            ->showBackground()
+            ->format('A4')
+            ->emulateMedia('screen')
             ->waitUntilNetworkIdle();
 
-        return response($pdf->pdf(), 200)->header('Content-Type','application/pdf');
+        $output = $browsershot->pdf();
+        return response($output, 200)->header('Content-Type','application/pdf');
     }
 
     public function getPdfFromBody(Request $request)
     {
         $html = $request->getContent();
 
-        $pdf = Browsershot::html($html)
+        $browsershot = Browsershot::html($html)
             ->setNodeBinary($this->getNodeBinary())
             ->setBinPath($this->getBinPath())
             ->userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
-            ->setIncludePath($this->getIncludePath())
-            ->setChromePath($this->getChromePath())
-            ->setNodeModulePath($this->getNodeModulePath())
+            //->setIncludePath($this->getIncludePath())
+            //->setChromePath($this->getChromePath())
+            //->setNodeModulePath($this->getNodeModulePath())
+            ->format('A4')
+            ->emulateMedia('screen')
             ->waitUntilNetworkIdle();
 
-        return response($pdf->pdf(), 200)->header('Content-Type','application/pdf');
+        $output = $browsershot->pdf();
+        return response($output, 200)->header('Content-Type','application/pdf');
     }
 
     protected function getNodeBinary()
@@ -72,7 +79,7 @@ class PdfController extends Controller
         }
     }
 
-    protected function getBinPath(Browsershot $browsershot)
+    protected function getBinPath()
     {
         if(! App::environment(['local'])) {
             return app_path('Services/Browsershot/browser-vapor.js');
@@ -86,7 +93,7 @@ class PdfController extends Controller
         if(! App::environment(['local'])) {
             return '$PATH:/usr/bin/node';
         } else {
-            return null;
+            return '';
         }
     }
     protected function getChromePath()
@@ -94,7 +101,7 @@ class PdfController extends Controller
         if(! App::environment(['local'])) {
             return '/usr/bin/chromium-browser';
         } else {
-            return null;
+            return '';
         }
     }
     protected function getNodeModulePath()
@@ -102,7 +109,7 @@ class PdfController extends Controller
         if(! App::environment(['local'])) {
             return '/usr/local/lib/node_modules';
         } else {
-            return null;
+            return '';
         }
     }
 }

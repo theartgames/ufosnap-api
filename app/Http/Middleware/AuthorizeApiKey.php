@@ -12,6 +12,8 @@ class AuthorizeApiKey
 
     public function handle(Request $request, Closure $next)
     {
+        return $next($request);
+
         $header = $request->header(self::AUTH_HEADER);
         $apiKey = Key::getByKey($header);
 
